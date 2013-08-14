@@ -37,7 +37,9 @@ http {
   server {
     listen            <%= ENV['PORT'] %>;
     server_name       _;
-
+	# lqan add
+	client_max_body_size 200M;
+	# lqan end
     # Some basic cache-control for static files to be sent to the browser
     location ~* \.(?:ico|css|js|gif|jpeg|jpg|png)$ {
       expires         max;
@@ -86,8 +88,17 @@ http {
     #  if (-d $request_filename) {
     #    break;
     #  }
-	#  # Rewrite URL
-      rewrite         ^(.+)$ /index.php?q=$1 last;
+	
+	# lqa add : using for PHP-FastCGI
+	location / { 
+		if (!-e $request_filename){ 
+			rewrite ^(.*)$ /$1.php; 
+		} 
+	}
+	# lqa end add
+	
+
+    # rewrite         ^(.+)$ /index.php?q=$1 last;
 
     #  # Add trailing slash to */wp-admin requests.
     #  rewrite         /wp-admin$ $scheme://$host$uri/ permanent;
